@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- COLORS -->
+	<color name="pause_default">#CC9933</color>
+	<color name="pause_pressed">#FF3333</color>
+	<color name="pause_focused">#55FF55</color>
+	<color name="player_default">#226622</color>
+	<color name="player_pressed">#00AA00</color>
+	<color name="player_focused">#449944</color>
+	<color name="player_default_active">#662222</color>
+	<color name="player_pressed_active">#994444</color>
+	<color name="lighttext">#FFFFFF</color>
+	<color name="darktext">#000000</color>
+    
+</resources>
