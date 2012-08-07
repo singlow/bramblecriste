@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,14 +30,16 @@ public class Timer extends Activity {
 
 	private SharedPreferences prefs;
     
-	private static long INITIAL_DEFAULT = 25*60*1000;
-    private static String INCREMENT = "turnIncrement";
-    private static long INCREMENT_DEFAULT = 0;
+	public static String PREFERENCES = "timerPreferences";
+	
+	public static long INITIAL_DEFAULT = 25*60*1000;
+	public static String INCREMENT = "turnIncrement";
+	public static long INCREMENT_DEFAULT = 0;
     
-    private static String PLAYER_1_INITIAL = "player1Initial";
-    private static String PLAYER_2_INITIAL = "player2Initial";
-    private static String PLAYER_1_REMAINING = "player1Remaining";
-    private static String PLAYER_2_REMAINING = "player2Remaining";
+	public static String PLAYER_1_INITIAL = "player1Initial";
+	public static String PLAYER_2_INITIAL = "player2Initial";
+    public static String PLAYER_1_REMAINING = "player1Remaining";
+    public static String PLAYER_2_REMAINING = "player2Remaining";
     
     private Vibrator vibe;
 
@@ -50,7 +54,7 @@ public class Timer extends Activity {
         
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE) ;
     
-    	prefs = this.getPreferences(MODE_PRIVATE);
+    	prefs = this.getSharedPreferences(PREFERENCES, Activity.MODE_PRIVATE);
 		config = new ClockConfig(
 				prefs.getLong(PLAYER_1_INITIAL, INITIAL_DEFAULT),
 				prefs.getLong(PLAYER_2_INITIAL, INITIAL_DEFAULT),
@@ -71,9 +75,9 @@ public class Timer extends Activity {
         player1Button.setText(formatTime(clock.getPlayer1Remaining()));
         player2Button.setText(formatTime(clock.getPlayer2Remaining()));
         
-        player1Button.setOnClickListener(new View.OnClickListener() {
+        player1Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public void onClick(View v) {
+			public boolean onTouch(View v, MotionEvent e) {
 				vibe.vibrate(50);
 				clock.startPlayer2();
 				player2Button.setEnabled(true);
@@ -81,11 +85,12 @@ public class Timer extends Activity {
 				pauseButton.setEnabled(true);
 				player1Button.setEnabled(false);
 				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+				return true;
 			}
 		});
-        player2Button.setOnClickListener(new View.OnClickListener() {
+        player2Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public void onClick(View v) {
+			public boolean onTouch(View v, MotionEvent e) {
 				vibe.vibrate(50);
 				clock.startPlayer1();
 				player2Button.setEnabled(false);
@@ -93,11 +98,12 @@ public class Timer extends Activity {
 				pauseButton.setEnabled(true);
 				player1Button.setEnabled(true);
 				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
+				return true;
 			}
 		});
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        pauseButton.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public void onClick(View v) {
+			public boolean onTouch(View v, MotionEvent e) {
 				vibe.vibrate(50);
 				clock.pause();
 				player2Button.setEnabled(true);
@@ -105,6 +111,7 @@ public class Timer extends Activity {
 				pauseButton.setEnabled(false);
 				player1Button.setEnabled(true);
 				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+				return true;
 			}
 		});
         
@@ -127,8 +134,10 @@ public class Timer extends Activity {
     @Override
     public void onResume() {
 		super.onResume();
-		clock.setPlayer1Remaining(prefs.getLong(PLAYER_1_REMAINING, 25*60*1000));
-		clock.setPlayer2Remaining(prefs.getLong(PLAYER_2_REMAINING, 25*60*1000));
+		config.initialTimePlayer1 = prefs.getLong(PLAYER_1_INITIAL, INITIAL_DEFAULT);
+		config.initialTimePlayer2 = prefs.getLong(PLAYER_2_INITIAL, INITIAL_DEFAULT);
+		clock.setPlayer1Remaining(prefs.getLong(PLAYER_1_REMAINING, config.initialTimePlayer1));
+		clock.setPlayer2Remaining(prefs.getLong(PLAYER_2_REMAINING, config.initialTimePlayer2));
 		handler.postDelayed(updateTime, 10);
 		player1Button.setEnabled(true);
 		player2Button.setEnabled(true);
@@ -171,6 +180,10 @@ public class Timer extends Activity {
 		switch (item.getItemId()) {
 		case R.id.menu_reset:
 			clock.reset();
+			break;
+		case R.id.menu_settings:
+			Intent settings = new Intent(this, Settings.class);
+			startActivity(settings);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
