@@ -12,6 +12,8 @@ Simple game timer for Scrabble on your Android phone/tablet.
 
 [Bramblecriste on Google Play](https://play.google.com/store/apps/details?id=com.iakob.bramblecriste)
 
+[Bramblecriste website](http://iakob.com/bramblecriste)
+
 [Download version 1.0.1 - bramblecriste.apk](http://iakob.com/bramblecriste/bramblecriste.apk)
 
 Now works with versions of android as old as Eclair.
