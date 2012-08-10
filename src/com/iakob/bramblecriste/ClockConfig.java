@@ -1,4 +1,4 @@
-package com.example.bramblecriste;
+package com.iakob.bramblecriste;
 
 public class ClockConfig {
 	public long initialTimePlayer1;

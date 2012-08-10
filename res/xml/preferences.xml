@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:title="@string/title_initial_time">
+ 		<ListPreference
+                android:key="player_1_initial"
+                android:title="@string/title_initial_time_player_1"
+                android:summary="@string/summary_initial_time"
+                android:entries="@array/entries_initial_time"
+                android:entryValues="@array/entryvalues_initial_time"
+                android:dialogTitle="@string/title_initial_time_player_1"
+                android:defaultValue="1500000" />
+ 		<ListPreference
+                android:key="player_2_initial"
+                android:title="@string/title_initial_time_player_2"
+                android:summary="@string/summary_initial_time"
+                android:entries="@array/entries_initial_time"
+                android:entryValues="@array/entryvalues_initial_time"
+                android:dialogTitle="@string/title_initial_time_player_2"
+                android:defaultValue="1500000" />
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+            android:title="@string/title_behaviors">
+
+        <CheckBoxPreference
+                android:key="vibrate_on_press"
+                android:title="@string/title_vibrate_on_press"
+                android:summary="@string/summary_vibrate_on_press" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

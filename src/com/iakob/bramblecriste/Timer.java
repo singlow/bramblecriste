@@ -1,7 +1,9 @@
-package com.example.bramblecriste;
+package com.iakob.bramblecriste;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.iakob.bramblecriste.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -29,19 +32,19 @@ public class Timer extends Activity {
 	private Handler handler;
 
 	private SharedPreferences prefs;
-    
-	public static String PREFERENCES = "timerPreferences";
 	
-	public static long INITIAL_DEFAULT = 25*60*1000;
-	public static String INCREMENT = "turnIncrement";
-	public static long INCREMENT_DEFAULT = 0;
+	public static String INITIAL_DEFAULT = "1500000";
+	public static String INCREMENT = "turn_increment";
+	public static String INCREMENT_DEFAULT = "0";
     
-	public static String PLAYER_1_INITIAL = "player1Initial";
-	public static String PLAYER_2_INITIAL = "player2Initial";
-    public static String PLAYER_1_REMAINING = "player1Remaining";
-    public static String PLAYER_2_REMAINING = "player2Remaining";
+	public static String PLAYER_1_INITIAL = "player_1_initial";
+	public static String PLAYER_2_INITIAL = "player_2_initial";
+    public static String PLAYER_1_REMAINING = "player_1_remaining";
+    public static String PLAYER_2_REMAINING = "player_2_remaining";
     
+    public static String VIBRATE_ON_PRESS = "vibrate_on_press";
     private Vibrator vibe;
+    private boolean vibrateOnPress = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,12 +57,14 @@ public class Timer extends Activity {
         
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE) ;
     
-    	prefs = this.getSharedPreferences(PREFERENCES, Activity.MODE_PRIVATE);
+    	prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		config = new ClockConfig(
-				prefs.getLong(PLAYER_1_INITIAL, INITIAL_DEFAULT),
-				prefs.getLong(PLAYER_2_INITIAL, INITIAL_DEFAULT),
-				prefs.getLong(INCREMENT, INCREMENT_DEFAULT));
+				Long.parseLong(prefs.getString(PLAYER_1_INITIAL, INITIAL_DEFAULT)),
+				Long.parseLong(prefs.getString(PLAYER_2_INITIAL, INITIAL_DEFAULT)),
+				Long.parseLong(prefs.getString(INCREMENT, INCREMENT_DEFAULT)));
 		clock = new Clock(config);
+		
+		vibrateOnPress = prefs.getBoolean(VIBRATE_ON_PRESS, false);
 
     	if (savedInstanceState != null) {
     		clock.setPlayer1Remaining(savedInstanceState.getLong(PLAYER_1_REMAINING));
@@ -78,7 +83,7 @@ public class Timer extends Activity {
         player1Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				vibe.vibrate(50);
+				if (vibrateOnPress) vibe.vibrate(50);
 				clock.startPlayer2();
 				player2Button.setEnabled(true);
 				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
@@ -91,7 +96,7 @@ public class Timer extends Activity {
         player2Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				vibe.vibrate(50);
+				if (vibrateOnPress) vibe.vibrate(50);
 				clock.startPlayer1();
 				player2Button.setEnabled(false);
 				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
@@ -104,7 +109,7 @@ public class Timer extends Activity {
         pauseButton.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				vibe.vibrate(50);
+				if (vibrateOnPress) vibe.vibrate(50);
 				clock.pause();
 				player2Button.setEnabled(true);
 				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
@@ -134,13 +139,14 @@ public class Timer extends Activity {
     @Override
     public void onResume() {
 		super.onResume();
-		config.initialTimePlayer1 = prefs.getLong(PLAYER_1_INITIAL, INITIAL_DEFAULT);
-		config.initialTimePlayer2 = prefs.getLong(PLAYER_2_INITIAL, INITIAL_DEFAULT);
+		config.initialTimePlayer1 = Long.parseLong(prefs.getString(PLAYER_1_INITIAL, INITIAL_DEFAULT));
+		config.initialTimePlayer2 = Long.parseLong(prefs.getString(PLAYER_2_INITIAL, INITIAL_DEFAULT));
 		clock.setPlayer1Remaining(prefs.getLong(PLAYER_1_REMAINING, config.initialTimePlayer1));
 		clock.setPlayer2Remaining(prefs.getLong(PLAYER_2_REMAINING, config.initialTimePlayer2));
 		handler.postDelayed(updateTime, 10);
 		player1Button.setEnabled(true);
 		player2Button.setEnabled(true);
+		vibrateOnPress = prefs.getBoolean(VIBRATE_ON_PRESS, false);
     }
     
 
@@ -182,7 +188,7 @@ public class Timer extends Activity {
 			clock.reset();
 			break;
 		case R.id.menu_settings:
-			Intent settings = new Intent(this, Settings.class);
+			Intent settings = new Intent(this, Preferences.class);
 			startActivity(settings);
 			break;
 		}
