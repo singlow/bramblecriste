@@ -2,7 +2,7 @@
 
 Simple game timer for Scrabble on your Android phone/tablet.
 
-  - Configure each players start time individually
+  - Configure each player's start time individually
   - Big easy-to-hit tap areas
   - Remembers the time if you exit
   - Prevents screen dim and sleep mode (make sure your battery is charged)
