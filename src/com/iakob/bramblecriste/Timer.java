@@ -45,6 +45,7 @@ public class Timer extends Activity {
     public static String VIBRATE_ON_PRESS = "vibrate_on_press";
     private Vibrator vibe;
     private boolean vibrateOnPress = false;
+    private int pauseCount = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,39 +84,51 @@ public class Timer extends Activity {
         player1Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				if (vibrateOnPress) vibe.vibrate(50);
-				clock.startPlayer2();
-				player2Button.setEnabled(true);
-				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
-				pauseButton.setEnabled(true);
-				player1Button.setEnabled(false);
-				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					pauseCount = 0;
+					if (vibrateOnPress) vibe.vibrate(50);
+					clock.startPlayer2();
+					player2Button.setEnabled(true);
+					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
+					player1Button.setEnabled(false);
+					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+				}
 				return true;
 			}
 		});
         player2Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				if (vibrateOnPress) vibe.vibrate(50);
-				clock.startPlayer1();
-				player2Button.setEnabled(false);
-				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
-				pauseButton.setEnabled(true);
-				player1Button.setEnabled(true);
-				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
-				return true;
+				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					pauseCount = 0;
+					if (vibrateOnPress) vibe.vibrate(50);
+					clock.startPlayer1();
+					player2Button.setEnabled(false);
+					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player1Button.setEnabled(true);
+					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
+				}
+				return true;	
 			}
 		});
         pauseButton.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
-				if (vibrateOnPress) vibe.vibrate(50);
-				clock.pause();
-				player2Button.setEnabled(true);
-				player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
-				pauseButton.setEnabled(false);
-				player1Button.setEnabled(true);
-				player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					if (vibrateOnPress) vibe.vibrate(50);
+					clock.pause();
+					player2Button.setEnabled(true);
+					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player1Button.setEnabled(true);
+					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					
+					pauseCount++;
+					if (pauseCount >= 5) {
+						clock.reset();
+						pauseCount = 0;
+					}
+				}
+				
 				return true;
 			}
 		});
