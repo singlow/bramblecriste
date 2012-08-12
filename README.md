@@ -7,6 +7,7 @@ Simple game timer for Scrabble on your Android phone/tablet.
   - Remembers the time if you exit
   - Prevents screen dim and sleep mode (make sure your battery is charged)
   - Overtime with negative time after time expires
+  - Choose from several color schemes
 
 ## Download
 
@@ -14,7 +15,7 @@ Simple game timer for Scrabble on your Android phone/tablet.
 
 [Bramblecriste website](http://iakob.com/bramblecriste)
 
-[Download version 1.0.1 - bramblecriste.apk](http://iakob.com/bramblecriste/bramblecriste.apk)
+[Download version 1.0.2 - bramblecriste.apk](http://iakob.com/bramblecriste/bramblecriste-1.0.2.apk)
 
 Now works with versions of android as old as Eclair.
 
