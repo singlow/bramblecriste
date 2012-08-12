@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="pause_color" format="color" />
+    <attr name="player_default_color" format="color" />
+    <attr name="player_active_color" format="color" />
+</resources>
