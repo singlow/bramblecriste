@@ -17,6 +17,10 @@
     <string name="title_vibrate_on_press">Vibrate</string>
     <string name="summary_vibrate_on_press">Vibrate when button is pushed</string>
     
+    <string name="title_appearance">Appearance</string>
+    <string name="title_color_theme">Color Scheme</string>
+    <string name="summary_color_theme">Choose colors for the clock</string>
+    
     <string-array name="entries_initial_time">
         <item>1</item>
         <item>2</item>

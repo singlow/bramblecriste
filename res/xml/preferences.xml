@@ -30,4 +30,16 @@
                 android:summary="@string/summary_vibrate_on_press" />
 
     </PreferenceCategory>
+    
+    <PreferenceCategory
+            android:title="@string/title_appearance">
+
+        <ListPreference
+                android:key="color_theme"
+                android:title="@string/title_color_theme"
+                android:summary="@string/summary_color_theme"
+                android:dialogTitle="@string/title_color_theme"
+                android:defaultValue="@style/Bramblecriste" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

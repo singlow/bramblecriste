@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,16 +37,20 @@ public class Timer extends Activity {
 	public static String INITIAL_DEFAULT = "1500000";
 	public static String INCREMENT = "turn_increment";
 	public static String INCREMENT_DEFAULT = "0";
-    
+
 	public static String PLAYER_1_INITIAL = "player_1_initial";
 	public static String PLAYER_2_INITIAL = "player_2_initial";
     public static String PLAYER_1_REMAINING = "player_1_remaining";
     public static String PLAYER_2_REMAINING = "player_2_remaining";
+
+	public static String COLOR_THEME = "color_theme";
     
     public static String VIBRATE_ON_PRESS = "vibrate_on_press";
     private Vibrator vibe;
     private boolean vibrateOnPress = false;
     private int pauseCount = 0;
+    
+    private int themeId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,12 @@ public class Timer extends Activity {
 				Long.parseLong(prefs.getString(PLAYER_2_INITIAL, INITIAL_DEFAULT)),
 				Long.parseLong(prefs.getString(INCREMENT, INCREMENT_DEFAULT)));
 		clock = new Clock(config);
+		try {
+			themeId = Integer.parseInt(prefs.getString(COLOR_THEME, Integer.toString(R.style.Bramblecriste)));
+		} catch (NumberFormatException e) {
+			themeId = R.style.Bramblecriste;
+		}
+		setTheme(themeId);
 		
 		vibrateOnPress = prefs.getBoolean(VIBRATE_ON_PRESS, false);
 
@@ -80,6 +91,11 @@ public class Timer extends Activity {
 
         player1Button.setText(formatTime(clock.getPlayer1Remaining()));
         player2Button.setText(formatTime(clock.getPlayer2Remaining()));
+
+        final TypedValue playerActiveColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.player_active_color, playerActiveColor, true);
+        final TypedValue playerDefaultColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.player_default_color, playerDefaultColor, true);
         
         player1Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
@@ -89,9 +105,9 @@ public class Timer extends Activity {
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer2();
 					player2Button.setEnabled(true);
-					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
+					player2Button.setBackgroundColor(playerActiveColor.data);
 					player1Button.setEnabled(false);
-					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player1Button.setBackgroundColor(playerDefaultColor.data);
 				}
 				return true;
 			}
@@ -104,9 +120,9 @@ public class Timer extends Activity {
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer1();
 					player2Button.setEnabled(false);
-					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player2Button.setBackgroundColor(playerDefaultColor.data);
 					player1Button.setEnabled(true);
-					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_active));
+					player1Button.setBackgroundColor(playerActiveColor.data);
 				}
 				return true;	
 			}
@@ -118,9 +134,9 @@ public class Timer extends Activity {
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.pause();
 					player2Button.setEnabled(true);
-					player2Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player2Button.setBackgroundColor(playerDefaultColor.data);
 					player1Button.setEnabled(true);
-					player1Button.setBackgroundDrawable(getResources().getDrawable(R.color.player_button_color));
+					player1Button.setBackgroundColor(playerDefaultColor.data);
 					
 					pauseCount++;
 					if (pauseCount >= 5) {
@@ -152,6 +168,11 @@ public class Timer extends Activity {
     @Override
     public void onResume() {
 		super.onResume();
+		
+		if (themeId != Integer.parseInt(prefs.getString(COLOR_THEME, Integer.toString(R.style.Bramblecriste)))) {
+			reload();
+		}
+		
 		config.initialTimePlayer1 = Long.parseLong(prefs.getString(PLAYER_1_INITIAL, INITIAL_DEFAULT));
 		config.initialTimePlayer2 = Long.parseLong(prefs.getString(PLAYER_2_INITIAL, INITIAL_DEFAULT));
 		clock.setPlayer1Remaining(prefs.getLong(PLAYER_1_REMAINING, config.initialTimePlayer1));
@@ -219,4 +240,14 @@ public class Timer extends Activity {
     		return prefix + timerFormatHigh.format(new Date(Math.abs(time)));
     	}
     } 
+
+    public void reload() {
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
 }

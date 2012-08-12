@@ -1,5 +1,58 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <style name="Bramblecriste" parent="android:Theme.Light">
+        <item name="player_default_color">#226622</item>
+        <item name="player_active_color">#662222</item>
+		<item name="pause_color">#CC9933</item>
+    </style>
+    
+    <style name="Bramblecriste.Bright">
+        <item name="player_default_color">#CC0000</item>
+        <item name="player_active_color">#0099CC</item>
+		<item name="pause_color">#9933CC</item>
+    </style>
+    
+    <style name="Bramblecriste.Nighttime">
+        <item name="player_default_color">#242522</item>
+        <item name="player_active_color">#565759</item>
+		<item name="pause_color">#c3c5c7</item>
+    </style>
+    
+    
+    <style name="Bramblecriste.October">
+        <item name="player_default_color">#E1722D</item>
+        <item name="player_active_color">#92410E</item>
+		<item name="pause_color">#A86A43</item>
+    </style>
 
+    <style name="Bramblecriste.Santa_Fe">
+        <item name="player_default_color">#DB0000</item>
+        <item name="player_active_color">#DB5F00</item>
+		<item name="pause_color">#31C3B8</item>
+    </style>
+    
+    <style name="Bramblecriste.Beach">
+        <item name="player_default_color">#002C92</item>
+        <item name="player_active_color">#3260C9</item>
+		<item name="pause_color">#A47B29</item>
+    </style>
+    
+    <style name="Bramblecriste.Haze">
+        <item name="player_default_color">#4F73A8</item>
+        <item name="player_active_color">#6F54AF</item>
+		<item name="pause_color">#4BB280</item>
+    </style>
+    
+    <style name="Bramblecriste.Mint">
+        <item name="player_default_color">#187348</item>
+        <item name="player_active_color">#4B8569</item>
+		<item name="pause_color">#4BB280</item>
+    </style>
+    
+    <style name="Bramblecriste.Marina">
+        <item name="player_default_color">#000F14</item>
+        <item name="player_active_color">#022936</item>
+		<item name="pause_color">#27758F</item>
+    </style>
+    
 </resources>
