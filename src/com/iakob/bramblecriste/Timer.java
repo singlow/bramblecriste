@@ -1,5 +1,6 @@
 package com.iakob.bramblecriste;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -101,6 +102,8 @@ public class Timer extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					handler.removeCallbacks(updateTimeDisplayTask);
+			        handler.postDelayed(updateTimeDisplayTask, 20);
 					pauseCount = 0;
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer2();
@@ -116,6 +119,8 @@ public class Timer extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					handler.removeCallbacks(updateTimeDisplayTask);
+			        handler.postDelayed(updateTimeDisplayTask, 20);
 					pauseCount = 0;
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer1();
@@ -131,8 +136,12 @@ public class Timer extends Activity {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					handler.removeCallbacks(updateTimeDisplayTask);
+					
 					if (vibrateOnPress) vibe.vibrate(50);
+					
 					clock.pause();
+					
 					player2Button.setEnabled(true);
 					player2Button.setBackgroundColor(playerDefaultColor.data);
 					player1Button.setEnabled(true);
@@ -145,12 +154,13 @@ public class Timer extends Activity {
 					}
 				}
 				
+				updateTimeDisplay();
+				
 				return true;
 			}
 		});
         
         handler = new Handler();
-        handler.postDelayed(updateTime, 10);
     }
     
     
@@ -158,7 +168,7 @@ public class Timer extends Activity {
     public void onPause() {
     	super.onPause();
     	clock.pause();
-    	handler.removeCallbacks(updateTime);
+    	handler.removeCallbacks(updateTimeDisplayTask);
     	Editor editor = prefs.edit();
        	editor.putLong(PLAYER_1_REMAINING, clock.getPlayer1Remaining());
        	editor.putLong(PLAYER_2_REMAINING, clock.getPlayer2Remaining());
@@ -177,7 +187,7 @@ public class Timer extends Activity {
 		config.initialTimePlayer2 = Long.parseLong(prefs.getString(PLAYER_2_INITIAL, INITIAL_DEFAULT));
 		clock.setPlayer1Remaining(prefs.getLong(PLAYER_1_REMAINING, config.initialTimePlayer1));
 		clock.setPlayer2Remaining(prefs.getLong(PLAYER_2_REMAINING, config.initialTimePlayer2));
-		handler.postDelayed(updateTime, 10);
+		handler.postDelayed(updateTimeDisplayTask, 10);
 		player1Button.setEnabled(true);
 		player2Button.setEnabled(true);
 		vibrateOnPress = prefs.getBoolean(VIBRATE_ON_PRESS, false);
@@ -200,14 +210,18 @@ public class Timer extends Activity {
     	}
     }
     
-    private Runnable updateTime = new Runnable() {
+    private Runnable updateTimeDisplayTask = new Runnable() {
 		@Override
 		public void run() {
-	        player1Button.setText(formatTime(clock.getPlayer1Remaining()));
-	        player2Button.setText(formatTime(clock.getPlayer2Remaining()));
-	        handler.postDelayed(updateTime, 10);
+			updateTimeDisplay();
+	        handler.postDelayed(updateTimeDisplayTask, 20);
 		}
 	};
+	
+	private void updateTimeDisplay() {
+        player1Button.setText(formatTime(clock.getPlayer1Remaining()));
+        player2Button.setText(formatTime(clock.getPlayer2Remaining()));
+	}
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -215,7 +229,14 @@ public class Timer extends Activity {
         return true;
     }
 
-    @Override
+	@Override
+	protected void onDestroy() {
+		handler.removeCallbacks(updateTimeDisplayTask);
+		super.onDestroy();
+	}
+
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_reset:
@@ -231,12 +252,12 @@ public class Timer extends Activity {
 
 
 	private final static SimpleDateFormat timerFormatHigh = new SimpleDateFormat("mm : ss");
-    private final static SimpleDateFormat timerFormatLow = new SimpleDateFormat("ss.SSS");
+    private final static DecimalFormat timerFormatLow = new DecimalFormat("0.0");
     private String formatTime(long time) {
-    	String prefix = time >=0 ? "" : "- ";
     	if (Math.abs(time) < 1000*60) {
-    		return prefix + timerFormatLow.format(new Date(Math.abs(time))).substring(0, 4);
+    		return timerFormatLow.format((double) time / 1000);
     	} else {
+        	String prefix = time >=0 ? "" : "-";
     		return prefix + timerFormatHigh.format(new Date(Math.abs(time)));
     	}
     } 
