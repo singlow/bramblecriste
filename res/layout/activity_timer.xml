@@ -15,7 +15,7 @@
         android:textSize="40dp"
         android:background="?player_default_color" />
 
-    <Button 
+    <com.iakob.bramblecriste.ResetButton
         android:id="@+id/pausebutton"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
