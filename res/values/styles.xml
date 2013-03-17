@@ -4,6 +4,7 @@
         <item name="player_default_color">#226622</item>
         <item name="player_active_color">#662222</item>
 		<item name="pause_color">#CC9933</item>
+		<item name="reset_color">#ff0000</item>
     </style>
     
     <style name="Bramblecriste.Bright">

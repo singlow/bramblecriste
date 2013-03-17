@@ -30,7 +30,7 @@ public class Timer extends Activity {
 	private ClockConfig config;
 	private Button player1Button;
 	private Button player2Button;
-	private Button pauseButton;
+	private ResetButton pauseButton;
 	private Handler handler;
 
 	private SharedPreferences prefs;
@@ -49,7 +49,6 @@ public class Timer extends Activity {
     public static String VIBRATE_ON_PRESS = "vibrate_on_press";
     private Vibrator vibe;
     private boolean vibrateOnPress = false;
-    private int pauseCount = 0;
     
     private int themeId;
 
@@ -88,7 +87,7 @@ public class Timer extends Activity {
 
         player1Button = (Button) findViewById(R.id.playerabutton);
         player2Button = (Button) findViewById(R.id.playerbbutton);
-        pauseButton = (Button) findViewById(R.id.pausebutton);
+        pauseButton = (ResetButton) findViewById(R.id.pausebutton);
 
         player1Button.setText(formatTime(clock.getPlayer1Remaining()));
         player2Button.setText(formatTime(clock.getPlayer2Remaining()));
@@ -97,14 +96,17 @@ public class Timer extends Activity {
         getTheme().resolveAttribute(R.attr.player_active_color, playerActiveColor, true);
         final TypedValue playerDefaultColor = new TypedValue();
         getTheme().resolveAttribute(R.attr.player_default_color, playerDefaultColor, true);
+        final TypedValue resetColor = new TypedValue();
+        getTheme().resolveAttribute(R.attr.reset_color, resetColor, true);
         
+        pauseButton.setResetColor(resetColor.data);
         player1Button.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
 					handler.removeCallbacks(updateTimeDisplayTask);
 			        handler.postDelayed(updateTimeDisplayTask, 20);
-					pauseCount = 0;
+					pauseButton.clear();
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer2();
 					player2Button.setEnabled(true);
@@ -121,7 +123,7 @@ public class Timer extends Activity {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
 					handler.removeCallbacks(updateTimeDisplayTask);
 			        handler.postDelayed(updateTimeDisplayTask, 20);
-					pauseCount = 0;
+					pauseButton.clear();
 					if (vibrateOnPress) vibe.vibrate(50);
 					clock.startPlayer1();
 					player2Button.setEnabled(false);
@@ -147,10 +149,8 @@ public class Timer extends Activity {
 					player1Button.setEnabled(true);
 					player1Button.setBackgroundColor(playerDefaultColor.data);
 					
-					pauseCount++;
-					if (pauseCount >= 5) {
+					if (pauseButton.increment()) {
 						clock.reset();
-						pauseCount = 0;
 					}
 				}
 				
