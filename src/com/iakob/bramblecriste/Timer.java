@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.iakob.bramblecriste.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -135,6 +133,15 @@ public class Timer extends Activity {
 			}
 		});
         pauseButton.setOnTouchListener(new View.OnTouchListener() {
+        	private Handler holdTimer = new Handler();
+        	private Runnable launchMenu = new Runnable() {
+				@Override
+				public void run() {
+	        		Timer.this.openOptionsMenu();
+	        		pauseButton.clear();
+				}
+        	};
+        	
 			@Override
 			public boolean onTouch(View v, MotionEvent e) {
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
@@ -152,6 +159,10 @@ public class Timer extends Activity {
 					if (pauseButton.increment()) {
 						clock.reset();
 					}
+					
+					holdTimer.postDelayed(launchMenu, 1500);
+				} else if (e.getAction() == MotionEvent.ACTION_UP) {
+					holdTimer.removeCallbacks(launchMenu);
 				}
 				
 				updateTimeDisplay();
