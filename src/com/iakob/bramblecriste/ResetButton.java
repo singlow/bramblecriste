@@ -21,8 +21,9 @@ public class ResetButton extends Button{
     
     public ResetButton(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        paint.setColor(Color.RED);
-        paint.setStyle(Style.FILL_AND_STROKE);
+        paint.setColor(Color.WHITE);
+        paint.setAlpha(128);
+        paint.setStyle(Style.FILL);
     }
 
     @Override
@@ -34,10 +35,9 @@ public class ResetButton extends Button{
     }
 
 	private void calculateBlock() {
-		gap = canvasHeight / 100;
+		gap = canvasHeight / 60;
 		block = new Rect(
-				gap, 
-				gap, 
+				0, 0,
 				canvasWidth - 2*gap, 
 				(canvasHeight - (2*resetTrigger+1)*gap)/resetTrigger/2);
 	}
@@ -46,7 +46,7 @@ public class ResetButton extends Button{
     public void onDraw(Canvas canvas) {
     	int start = resetTrigger - resetCount;
     	for (int i = start; i < start+resetCount*2; i++) {
-    		block.offsetTo(gap, (canvasHeight-gap)*i/resetTrigger/2 + gap);
+    		block.offsetTo(gap-1, (canvasHeight-gap)*i/resetTrigger/2 + gap + 1 );
     		canvas.drawRect(block, paint);
 		}
     }
